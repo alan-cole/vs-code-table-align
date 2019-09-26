@@ -22,9 +22,12 @@ function getLines (textEditor: vscode.TextEditor, ranges: Array<vscode.Range>) {
 }
 
 function performTableAlignment (lines:vscode.TextLine[]) {
+  const rowIndentation:number[] = []
+
   // Prep lines
   const finalRows:string[][] = []
   lines.forEach((row) => {
+    rowIndentation.push(row.text.indexOf('|'))
     const preCols = row.text.trim().split('|')
     const cols:string[] = []
     preCols.forEach((testCol:string) => {
@@ -54,8 +57,8 @@ function performTableAlignment (lines:vscode.TextLine[]) {
 
   // Assemble lines
   const finalLines:string[] = []
-  finalRows.forEach(row => {
-    let line = ''
+  finalRows.forEach((row, rowIdx) => {
+    let line = ' '.repeat(rowIndentation[rowIdx])
     row.forEach((col:string, colIdx:number) => {
       line += (colIdx === 0 ? '|' : '') + ' ' + (col + ' |')
     })
