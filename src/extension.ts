@@ -84,7 +84,7 @@ export async function commandTableAlign(textEditor: vscode.TextEditor, ranges: A
 
 // Controls for extension.
 export function activate(context: vscode.ExtensionContext) {
-	const command = vscode.commands.registerCommand('extension.tableAlign', () => {
+	const command = vscode.commands.registerCommand('alan-cole.tableAlign', () => {
 		if (vscode.window.activeTextEditor) {
 			commandTableAlign(vscode.window.activeTextEditor, vscode.window.activeTextEditor.selections);
 		}

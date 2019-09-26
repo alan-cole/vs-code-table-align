@@ -1,6 +1,6 @@
-# tablealign README
+# tablealign
 
-This is the README for your extension "tablealign". After writing up a brief description, we recommend including the following sections.
+An aligner for tables.
 
 ## Features
 
