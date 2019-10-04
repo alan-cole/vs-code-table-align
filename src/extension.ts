@@ -81,13 +81,13 @@ export async function commandTableAlign(textEditor: vscode.TextEditor, ranges: A
 			});
 		})
 	} else {
-		vscode.window.showInformationMessage('No text range was selected.');
+		vscode.window.showInformationMessage('Alignment failed: No text range was selected.');
 	}
 }
 
 // Controls for extension.
 export function activate(context: vscode.ExtensionContext) {
-	const command = vscode.commands.registerCommand('alan-cole.tableAlign', () => {
+	const command = vscode.commands.registerCommand('alan-cole.gherkinTableAlign', () => {
 		if (vscode.window.activeTextEditor) {
 			commandTableAlign(vscode.window.activeTextEditor, vscode.window.activeTextEditor.selections);
 		}

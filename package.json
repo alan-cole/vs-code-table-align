@@ -1,9 +1,9 @@
 {
-	"name": "tablealign",
-	"displayName": "tablealign",
-	"description": "An aligner for tables",
-	"version": "0.0.1",
-	"publisher": "alan-cole",
+	"name": "gherkintablealign",
+	"displayName": "Gherkin Table Align",
+	"description": "A table formatter for gherkin tables.",
+	"version": "0.0.3",
+	"publisher": "AlanCole",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/alan-cole/vs-code-table-align"
@@ -15,14 +15,14 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:alan-cole.tableAlign"
+		"onCommand:alan-cole.gherkinTableAlign"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "alan-cole.tableAlign",
-				"title": "Table Align"
+				"command": "alan-cole.gherkinTableAlign",
+				"title": "Gherkin Table Align"
 			}
 		]
 	},
