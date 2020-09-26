@@ -5,6 +5,15 @@ class Scope {
   end:number = 0
 }
 
+class LineChange {
+  range:vscode.Range
+  text:string
+  constructor (range:vscode.Range, text:string) {
+    this.range = range
+    this.text = text
+  }
+}
+
 function getTableScopes(textEditor:vscode.TextEditor, lineFrom:number, lineTo:number) {
   const scopes:Scope[] = []
   let currentScope:Scope = new Scope()
@@ -36,7 +45,7 @@ function getTableScopes(textEditor:vscode.TextEditor, lineFrom:number, lineTo:nu
   return scopes
 }
 
-function getLines (textEditor:vscode.TextEditor, ranges:Array<vscode.Range>) {
+function getScopes (textEditor:vscode.TextEditor, ranges:Array<vscode.Range>) {
   let scopes:Scope[]
   let noSelection:boolean = (ranges.length === 1 && ranges[0].isSingleLine && ranges[0].start.character === ranges[0].end.character)
 
@@ -49,16 +58,7 @@ function getLines (textEditor:vscode.TextEditor, ranges:Array<vscode.Range>) {
       scopes = scopes.concat(rangeScopes)
     })
   }
-
-	return scopes.map(({ start, end }) => {
-		const lines = []
-		for (let i = start; i <= end; i++) {
-			lines.push(textEditor.document.lineAt(i))
-		}
-		return lines
-	}).reduce((prev, current) => {
-		return prev.concat(current)
-	})
+  return scopes
 }
 
 function performTableAlignment (lines:vscode.TextLine[]) {
@@ -109,23 +109,39 @@ function performTableAlignment (lines:vscode.TextLine[]) {
 }
 
 export async function commandTableAlign(textEditor:vscode.TextEditor, ranges:Array<vscode.Range>) {
-	const lines = getLines(textEditor, ranges)
-	if (lines.length > 0) {
-		const preparedLines = performTableAlignment(lines)
-		// replace lines
-		textEditor.edit(editBuilder => {
-			let lineIndex = 0
-			lines.forEach(line => {
-				editBuilder.replace(line.range, preparedLines[lineIndex])
-				lineIndex++
-			})
-		})
-	} else {
-		vscode.window.showInformationMessage('Alignment failed: No text range was selected.')
-	}
+  const lineChanges:LineChange[] = []
+  const scopes:Scope[] = getScopes(textEditor, ranges)
+
+  scopes.forEach(scope => {
+    // get scope lines
+		const lines:vscode.TextLine[] = []
+		for (let i = scope.start; i <= scope.end; i++) {
+			lines.push(textEditor.document.lineAt(i))
+    }
+    // align scope lines
+    if (lines.length > 0) {
+      const preparedLines:string[] = performTableAlignment(lines)
+      lines.forEach((line, lineIndex) => {
+        lineChanges.push(new LineChange(line.range, preparedLines[lineIndex]))
+      })
+    }
+  })
+
+  // replace editor lines with alignments
+  if (lineChanges.length > 0) {
+    textEditor.edit(editBuilder => {
+      let lineIndex = 0
+      lineChanges.forEach((change:LineChange) => {
+        editBuilder.replace(change.range, change.text)
+        lineIndex++
+      })
+    })
+  } else {
+    vscode.window.showInformationMessage('Alignment failed: No tables were found.');
+  }
 }
 
-// controls for extension.
+// controls for extension
 export function activate(context:vscode.ExtensionContext) {
 	const command = vscode.commands.registerCommand('alan-cole.gherkinTableAlign', () => {
 		if (vscode.window.activeTextEditor) {
