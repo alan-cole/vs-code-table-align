@@ -30,6 +30,8 @@ Given the following users exist:
 
 ## Release Notes
 
+- 1.0.0 - Format all tables on document if nothing is selected.
+        - Format selected table lines, even if selection includes non-table lines.
 - 0.0.3 - Naming update. Readme.
 - 0.0.2 - Keep line indentation before the first "|".
 - 0.0.1 - Initial release
