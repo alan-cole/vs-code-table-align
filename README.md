@@ -1,4 +1,4 @@
-# Table Align
+# Gherkin Table Align
 
 A table formatter for [gherkin data tables](https://cucumber.io/docs/gherkin/reference/#data-tables).
 

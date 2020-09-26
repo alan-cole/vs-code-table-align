@@ -4,6 +4,7 @@
 	"description": "A table formatter for gherkin tables.",
 	"version": "1.0.0",
 	"publisher": "AlanCole",
+	"icon": "images/icon.png",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/alan-cole/vs-code-table-align"
