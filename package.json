@@ -2,7 +2,7 @@
 	"name": "gherkintablealign",
 	"displayName": "Gherkin Table Align",
 	"description": "A table formatter for gherkin tables.",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"publisher": "AlanCole",
 	"icon": "images/icon.png",
 	"repository": {
