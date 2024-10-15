@@ -18,10 +18,20 @@ function getTableScopes(textEditor:vscode.TextEditor, lineFrom:number, lineTo:nu
   const scopes:Scope[] = []
   let currentScope:Scope = new Scope()
   let isScopeOpen:boolean = false
+  const allowEmptyRow:boolean = vscode.workspace.getConfiguration('gherkinTableAlign').get('allowEmptyRow') ?? false
 
   for (let i = lineFrom; i <= lineTo; i++) {
     const line = textEditor.document.lineAt(i)
-    if (line.text.trim().indexOf('|') === 0) {
+    const lineText = line.text.trim()
+
+    let isAllowedBlankLine:boolean = false
+    if (allowEmptyRow && isScopeOpen) {
+      // if this line is blank and the next line is blank / a table row, then keep scope open.
+      const nextLineText = (i + 1 < textEditor.document.lineCount) ? textEditor.document.lineAt(i + 1).text.trim() : null
+      isAllowedBlankLine = (lineText === '' && nextLineText !== null && (nextLineText === '' || nextLineText.indexOf('|') === 0)) ?? false
+    }
+
+    if (lineText.indexOf('|') === 0 || isAllowedBlankLine) {
       // open the scope
       if (!isScopeOpen) {
         currentScope.start = i
@@ -67,8 +77,10 @@ function performTableAlignment (lines:vscode.TextLine[]) {
   // prep lines
   const finalRows:string[][] = []
   lines.forEach((row) => {
-    rowIndentation.push(row.text.indexOf('|'))
-    const preCols = row.text.trim().split('|')
+    const lineText = row.text.trim()
+    const hasText = (lineText !== '')
+    rowIndentation.push(hasText ? row.text.indexOf('|') : 0)
+    const preCols = hasText ? lineText.split('|') : []
     const cols:string[] = []
     preCols.forEach((testCol:string) => {
       if (testCol.length > 0) {
@@ -114,9 +126,9 @@ export async function commandTableAlign(textEditor:vscode.TextEditor, ranges:Arr
 
   scopes.forEach(scope => {
     // get scope lines
-		const lines:vscode.TextLine[] = []
-		for (let i = scope.start; i <= scope.end; i++) {
-			lines.push(textEditor.document.lineAt(i))
+    const lines:vscode.TextLine[] = []
+    for (let i = scope.start; i <= scope.end; i++) {
+      lines.push(textEditor.document.lineAt(i))
     }
     // align scope lines
     if (lines.length > 0) {
@@ -143,12 +155,12 @@ export async function commandTableAlign(textEditor:vscode.TextEditor, ranges:Arr
 
 // controls for extension
 export function activate(context:vscode.ExtensionContext) {
-	const command = vscode.commands.registerCommand('alan-cole.gherkinTableAlign', () => {
-		if (vscode.window.activeTextEditor) {
-			commandTableAlign(vscode.window.activeTextEditor, vscode.window.activeTextEditor.selections)
-		}
-	})
-	context.subscriptions.push(command)
+  const command = vscode.commands.registerCommand('alan-cole.gherkinTableAlign', () => {
+    if (vscode.window.activeTextEditor) {
+      commandTableAlign(vscode.window.activeTextEditor, vscode.window.activeTextEditor.selections)
+    }
+  })
+  context.subscriptions.push(command)
 }
 
 export function deactivate() {}
