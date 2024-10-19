@@ -4,6 +4,11 @@ All notable changes to the "tablealign" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## 1.1.0
+
+* Added option "Allow empty rows in tables."
+* Updated dependencies.
+
 ## 1.0.1
 
 * Updated readme.
