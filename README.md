@@ -51,6 +51,11 @@ Run from the command palette by searching `Gherkin Table Align`, or set your own
 
 ## Release Notes
 
+## 1.1.0
+
+* Added option "Allow empty rows in tables."
+* Updated dependencies.
+
 ### 1.0.1
 
 * Updated readme.

@@ -71,15 +71,15 @@ function getScopes (textEditor:vscode.TextEditor, ranges:readonly vscode.Range[]
   return scopes;
 }
 
-function performTableAlignment (lines:vscode.TextLine[]) {
+export function performTableAlignment (lines:string[]) {
   const rowIndentation:number[] = [];
 
   // prep lines
   const finalRows:string[][] = [];
   lines.forEach((row) => {
-    const lineText = row.text.trim();
+    const lineText = row.trim();
     const hasText = (lineText !== '');
-    rowIndentation.push(hasText ? row.text.indexOf('|') : 0);
+    rowIndentation.push(hasText ? row.indexOf('|') : 0);
     const preCols = hasText ? lineText.split('|') : [];
     const cols:string[] = [];
     preCols.forEach((testCol:string) => {
@@ -132,7 +132,7 @@ export async function commandTableAlign(textEditor:vscode.TextEditor, ranges:rea
     }
     // align scope lines
     if (lines.length > 0) {
-      const preparedLines:string[] = performTableAlignment(lines);
+      const preparedLines:string[] = performTableAlignment(lines.map(l => l.text));
       lines.forEach((line, lineIndex) => {
         lineChanges.push(new LineChange(line.range, preparedLines[lineIndex]));
       });
