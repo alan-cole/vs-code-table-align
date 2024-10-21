@@ -26,7 +26,7 @@ function getTableScopes(textEditor:vscode.TextEditor, lineFrom:number, lineTo:nu
 
     let isAllowedBlankLine:boolean = false;
     if (allowEmptyRow && isScopeOpen) {
-      // if this line is blank and the next line is blank / a table row, then keep scope open.
+      // if this line is blank and the next line is blank / a table row, then keep scope open
       const nextLineText = (i + 1 < textEditor.document.lineCount) ? textEditor.document.lineAt(i + 1).text.trim() : null;
       isAllowedBlankLine = (lineText === '' && nextLineText !== null && (nextLineText === '' || nextLineText.indexOf('|') === 0)) ?? false;
     }
@@ -142,10 +142,8 @@ export async function commandTableAlign(textEditor:vscode.TextEditor, ranges:rea
   // replace editor lines with alignments
   if (lineChanges.length > 0) {
     textEditor.edit(editBuilder => {
-      let lineIndex = 0;
       lineChanges.forEach((change:LineChange) => {
         editBuilder.replace(change.range, change.text);
-        lineIndex++;
       });
     });
   } else {
